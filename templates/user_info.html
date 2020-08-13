@@ -1,13 +1,35 @@
 {% extends 'base.html' %}
 
-{% block title %}Secret{%endblock%}
+{% block title %}User Details{%endblock%}
 
 {% block content %}
 <h1>Hello, {{ user.username }}</h1>
+{% if user.username == session['username'] %}
+<a href="/users/{{ user.username }}/delete">delete user</a>
+{% endif %}
 <h3>Your profile:</h3>
 <ul>
     <li>First name: {{ user.first_name }}</li>
     <li>Last name: {{ user.last_name }}</li>
+    {% if user.username == session['username'] %}
     <li>Email: {{ user.email }}</li>
+    {% endif %}
 </ul>
+
+<h3>Feedback:</h3>
+{% if user.username == session['username'] %}
+<a href="/users/{{ user.username }}/feedback/add">Add Feedback</a>
+{% endif %}
+<ul>
+    {% for feedback in feedback %}
+        <h3>{{ feedback.title }}</h3>
+        <p>{{ feedback.content }}</p>
+        {% if user.username == session['username'] %}
+        <p> <a href="/feedback/{{ feedback.id }}/update">edit</a>  
+            <a href="/feedback/{{ feedback.id }}/delete">delete</a></p>
+        <hr>
+        {% endif %}
+    {% endfor %}
+</ul>
+
 {% endblock %}
