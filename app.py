@@ -84,3 +84,10 @@ def secret_page():
 
     flash("Need to be logged in first")
     return redirect("/login")
+
+@app.route("/logout")
+def logout_user():
+    """Logout current logged in user"""
+
+    session.pop("username")
+    return redirect("/login")
