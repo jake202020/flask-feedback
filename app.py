@@ -3,7 +3,7 @@
 from flask import Flask, render_template, redirect, session, flash
 from flask_debugtoolbar import DebugToolbarExtension
 from models import connect_db, db, User
-from forms import RegisterForm
+from forms import RegisterForm, LoginForm
 
 app = Flask(__name__)
 app.config["SQLALCHEMY_DATABASE_URI"] = "postgres:///flask_feedback_db"
@@ -46,3 +46,33 @@ def registration_form():
 
     else:
         return render_template("register.html", form=form)
+
+@app.route("/login", methods=["GET", "POST"])
+def login_form():
+    """Show a login form (GET) or login a new user and show secret page (POST)"""
+
+    form = LoginForm()
+
+    if form.validate_on_submit():
+        username = form.username.data
+        pwd = form.password.data
+
+        # authenticate will return a user or False
+        user = User.authenticate(username, pwd)
+
+        if user:
+            # session["user_id"] = user.id
+            flash("Login successful")
+            # on successful login, redirect to secret page
+            return redirect("/secret")
+
+        else:
+            form.username.errors = ["Bad name/password"]
+
+    return render_template("login.html", form=form)
+
+@app.route("/secret")
+def secret_page():
+    """Show secret page to logged in  user"""
+
+    return render_template("/secret.html")
