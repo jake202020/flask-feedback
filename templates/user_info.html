@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %}Secret{%endblock%}
+
+{% block content %}
+<h1>Hello, {{ user.username }}</h1>
+<h3>Your profile:</h3>
+<ul>
+    <li>First name: {{ user.first_name }}</li>
+    <li>Last name: {{ user.last_name }}</li>
+    <li>Email: {{ user.email }}</li>
+</ul>
+{% endblock %}

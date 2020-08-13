@@ -44,7 +44,7 @@ def registration_form():
 
         flash("User successfully created")
         # on successful login, redirect to secret page
-        return redirect("/secret")
+        return redirect(f"/users/{ username }")
 
     else:
         return render_template("register.html", form=form)
@@ -69,18 +69,20 @@ def login_form():
             session["username"] = user.username
 
             # on successful login, redirect to secret page
-            return redirect("/secret")
+            return redirect(f"/users/{ username }")
 
         else:
             form.username.errors = ["Bad name/password"]
 
     return render_template("login.html", form=form)
 
-@app.route("/secret")
-def secret_page():
+@app.route("/users/<username>")
+def secret_page(username):
     """Show secret page to logged in  user"""
+
     if "username" in session:
-        return render_template("/secret.html")
+        user = User.query.get_or_404(username)
+        return render_template("/user_info.html", user=user)
 
     flash("Need to be logged in first")
     return redirect("/login")
