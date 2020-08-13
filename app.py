@@ -39,7 +39,9 @@ def registration_form():
         db.session.add(user)
         db.session.commit()
 
-        # session["user_id"] = user.id
+        # Add username to session for authorization
+        session["username"] = user.username
+
         flash("User successfully created")
         # on successful login, redirect to secret page
         return redirect("/secret")
@@ -61,8 +63,11 @@ def login_form():
         user = User.authenticate(username, pwd)
 
         if user:
-            # session["user_id"] = user.id
             flash("Login successful")
+
+            # Add username to session for authorization
+            session["username"] = user.username
+
             # on successful login, redirect to secret page
             return redirect("/secret")
 
@@ -74,5 +79,8 @@ def login_form():
 @app.route("/secret")
 def secret_page():
     """Show secret page to logged in  user"""
+    if "username" in session:
+        return render_template("/secret.html")
 
-    return render_template("/secret.html")
+    flash("Need to be logged in first")
+    return redirect("/login")
